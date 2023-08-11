@@ -1,0 +1,79 @@
+/*Consider the following schema foe Order Database: 
+SALESMAN(Salesman_ id, Name, City, Commission) 
+CUSTOMER(Customer_ id, Customer_ name, Grade, Salesman_ id) 
+ORDERS(Order_ no, Purchase_ amount, Order_ date, Customer_ id, Salesman_ id)
+a) List all salesman and indicate those have and don’t have customers in their cities(use UNION 
+operation).
+b) Update the age to NULL for Name = ‘rajeshwari’. Note that the NULL used here is MySQL NULL 
+and not string NULL.
+c) Retrieve the commission of salesman who has ‘oo’ in their names.
+d) Among parent table and child table check for which table deletion is possible or not. Justify your 
+answer.*/
+--Table creation:
+CREATE TABLE SALESMAN(SALESMAN_ID INT PRIMARY KEY,NAME CHAR(20),CITY 
+CHAR(20),COMMISSION REAL); 
+CREATE TABLE CUSTOMER(CUSTOMER_ID INT PRIMARY KEY,CUSTOMER_NAME 
+CHAR(20),CITY CHAR(20),GRADE INT,SALESMAN_ID INT,FOREIGN KEY(SALESMAN_ID) 
+REFERENCES SALESMAN(SALESMAN_ID) ON DELETE SET NULL); 
+CREATE TABLE ORDERS(ORDER_NO INT PRIMARY KEY,PURCHASE_AMOUNT 
+REAL,ORDER_DATE DATE,CUSTOMER_ID INT,FOREIGN KEY(CUSTOMER_ID) 
+REFERENCES CUSTOMER(CUSTOMER_ID),SALESMAN_ID INT,FOREIGN 
+KEY(SALESMAN_ID) REFERENCES SALESMAN(SALESMAN_ID) ON DELETE CASCADE);
+--Insertion into table:
+INSERT INTO SALESMAN 
+VALUES(1000,'BHUVANESH K','BANGLORE',12000), 
+(1001,'PRAGATHI','BANGLORE','15000'), 
+(1002,'VASUDEVAPRASAD','MANGLORE',10000), 
+(1003,'GURUPRASADKONDI','MYSORE@123',19000), 
+(1004,'SRISAI SALERS','MANDYA',25000),
+(1005,'BOOKTRIBUTERS','HANUMANTHNAGAR',16200),
+(1006,'SHOWROOMGALAXY','BIDAR',14900);
+INSERT INTO CUSTOMER 
+VALUES(100,'SPOORTHIASHWIN','BIDAR',10,1000),
+(101,'AMRUTHANUKASHYAP','MANGLORE',8,1000),
+(102,'RAJESHWARI','MANGLORE',5,1002), 
+(103,'NISHAKGOWDA','MANGLORE',9,1001), 
+(104,'SATHWIK','MANDYA','10','1004'), 
+(105,'GURUDEVANAYAK','BIDAR',7,1002),
+(106,'VASUMURTHI','MYSORE@123',9,1003);
+INSERT INTO ORDERS 
+VALUES(10,23000,'2019-09-17',100,1000),
+(11,26455,'2019-06-03',102,1001),
+(12,30002,'2019-01-03',103,1002), 
+(13,17003,'2019-07-17',105,1003), 
+(14,45255,'2019-05-13',106,1004),
+(15,32000,'2019-07-23',101,1000),
+(16,27000,'2019-05-23',104,1002), 
+(17,26255,'2019-09-17',104,1000);
+/*To list all salesmen and indicate those who have and don't have customers in their cities using the 
+UNION, operation we need to perform following steps:*/
+--Step 1: Retrieve the salesmen who have customers in their cities.
+SELECT S.Name AS SalesmanName, S.City AS SalesmanCity, 'Has Customers' AS Status
+FROM SALESMAN S natural JOIN CUSTOMER C
+where S.city = C.city;
+--Step 2: Retrieve the salesmen who don't have customers in their cities.
+SELECT S.Name AS SalesmanName, S.City AS SalesmanCity, 'No Customers' AS Status
+FROM SALESMAN S JOIN CUSTOMER C ON S.SALESMAN_ID = C.SALESMAN_ID
+where S.City != C.City;
+--Step 3: Combine the results using the UNION operation to get a single result set.
+SELECT S.Name AS SalesmanName, S.City AS SalesmanCity, 'Has Customers' AS Status
+FROM SALESMAN S natural JOIN CUSTOMER C
+where S.city = C.city
+UNION
+SELECT S.Name AS SalesmanName, S.City AS SalesmanCity, 'No Customers' AS Status
+FROM SALESMAN S JOIN CUSTOMER C ON S.SALESMAN_ID = C.SALESMAN_ID
+where S.City != C.City;
+/*b) Update the city to NULL for Name = ‘rajeshwari’. Note that the NULL used here is MySQL NULL 
+and not string NULL.*/
+UPDATE CUSTOMER
+SET city = NULL
+WHERE CUSTOMER_NAME LIKE 'rajeshwari';
+/*C) Retrieve the commission of salesman who has ‘oo’ in their names.
+SELECT Commission*/
+FROM SALESMAN
+WHERE Name LIKE '%oo%';
+/*d) Among parent table and child table check for which table deletion is possible or not. Justify 
+your answer.*/
+DROP TABLE salesman;
+DROP TABLE customer;
+DROP TABLE orders;
