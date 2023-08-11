@@ -1,0 +1,33 @@
+/*Consider the following schema of a library database.
+Book (Book_id, Title, Pub_name, Pub_year)
+Book_Author (Book_id, Author_Name)
+a) Retrieve book names published in 2017
+b) Delete data having book name “Harry porter”
+c) Insert a row into “Book” schema */
+--Table creation:
+Create table Book ( Book_id int primary key, title varchar(50), pub_name varchar(50), Pub_year
+year);
+Create table Book_Authors (Book_id int, Author_Name varchar(50), foreign key (Book_id) 
+references Book(Book_id) on delete cascade);
+--Insertion into table:
+--Book:
+Insert into Book ( Book_id, title, pub_name, Pub_year)
+Values( 1000, ‘DBMS’, ‘Pearson’, 2017),
+(1001, ‘Fundamentals of DB’, ‘Penguin’, 1997),
+(1002, ‘Harry Potter’, ‘Book Hound’, 2017);
+--Book_Authors:
+Insert into Book_Authors(Book_id, Author_Name)
+Values(1000, ‘B Navathe’),
+(1001, ‘B Navathe’),
+(1002, ‘JK Rowling’);
+--a) Retrieve book names published in 2017
+select title
+from Book
+where Pub_year = 2017;
+--b) Delete data having book name “Harry potter”
+delete 
+from book
+where title = ‘Harry Potter’;
+--c) Insert a row into “Book” schema
+Insert into Book ( Book_id, title, pub_name, Pub_year)
+values(1003, ‘Operating System’, ‘Wiley’, 1960);
